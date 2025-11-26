@@ -1,9 +1,9 @@
-import os
 import random
 import tempfile
 import unittest
+from pathlib import Path
 
-from word_salat import scramble_text, scramble_word, score_decoded_text
+from src import score_decoded_text, scramble_text, scramble_word
 
 
 class ScrambleWordTests(unittest.TestCase):
@@ -39,8 +39,7 @@ class ScrambleTextTests(unittest.TestCase):
 
     def test_scramble_text_handles_german_sentence(self) -> None:
         text = (
-            "Obwohl verschlungene Worte verblüffen, bleibt der Sinn für Menschen "
-            "erstaunlich klar."
+            "Obwohl verschlungene Worte verblüffen, bleibt der Sinn für Menschen erstaunlich klar."
         )
         scrambled = scramble_text(text, seed=2025)
         self.assertEqual(
@@ -105,18 +104,17 @@ class ScoreDecodedTextTests(unittest.TestCase):
         decoded = "Alpha Beta"
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            results_path = os.path.join(tmpdir, "scores.md")
+            results_path = Path(tmpdir) / "scores.md"
             score = score_decoded_text(
                 original,
                 decoded,
                 name="UnitTestModel",
                 source_label="snippet.txt",
-                results_file=results_path,
+                results_file=str(results_path),
             )
 
             self.assertAlmostEqual(score, 1.0)
-            with open(results_path, "r", encoding="utf-8") as fh:
-                contents = fh.read()
+            contents = results_path.read_text(encoding="utf-8")
 
         self.assertIn("UnitTestModel", contents)
         self.assertIn("`snippet.txt`", contents)
