@@ -121,7 +121,7 @@ class ScoreDecodedTextTests(unittest.TestCase):
 
     def test_score_decoded_text_rejects_unknown_method(self) -> None:
         with self.assertRaises(ValueError):
-            score_decoded_text("a", "a", method="unknown")
+            score_decoded_text("a", "a", method="unknown")  # type: ignore[arg-type]
 
 
 if __name__ == "__main__":
