@@ -8,13 +8,13 @@ Generate word salad text by shuffling the interior letters of each word while ke
 
 ## Features
 
-- 🔀 **Scramble text** while preserving readability
-- 🎯 **Deterministic output** with optional `--seed` for reproducible experiments
-- 📚 **Library functions** for programmatic use
-- 🖥️ **Rich CLI** with subcommands for scrambling, scoring, and batch evaluation
-- 📊 **Multiple scoring methods** to grade AI decoding attempts
-- 🏆 **Leaderboard generation** for comparing model performance
-- ✅ **Fully typed** with `py.typed` marker for IDE support
+- **Scramble text** while preserving readability
+- **Deterministic output** with optional `--seed` for reproducible experiments
+- **Library functions** for programmatic use
+- **Rich CLI** with subcommands for scrambling, scoring, and batch evaluation
+- **Multiple scoring methods** to grade AI decoding attempts
+- **Leaderboard generation** for comparing model performance
+- **Fully typed** with `py.typed` marker for IDE support
 
 ## Installation
 
@@ -86,8 +86,8 @@ word-salat evaluate -o text.txt -d text_decoded/ --no-log
 ### Library API
 
 ```python
-from word_salat import scramble_text, scramble_word, score_decoded_text
-from word_salat import batch_evaluate, generate_leaderboard
+from src import scramble_text, scramble_word, score_decoded_text
+from src import batch_evaluate, generate_leaderboard
 
 # Scramble text
 original = "A longish sentence to scramble"
@@ -100,7 +100,7 @@ score = score_decoded_text(original, decoded_attempt)
 print(f"Score: {score:.2%}")
 
 # Get detailed metrics
-from word_salat.scoring import compute_detailed_score
+from src.scoring import compute_detailed_score
 result = compute_detailed_score(original, decoded_attempt, name="my-model")
 print(f"Char: {result.char_score:.2%}, Word: {result.word_score:.2%}")
 
@@ -206,12 +206,12 @@ Version 2.0 introduces a new package structure. To migrate:
    # Old (v1)
    from word_salat import scramble_text, score_decoded_text
 
-   # New (v2) - same imports still work!
-   from word_salat import scramble_text, score_decoded_text
+   # New (v2)
+   from src import scramble_text, score_decoded_text
 
-   # New detailed imports
-   from word_salat.core import scramble_text, scramble_word
-   from word_salat.scoring import score_decoded_text, batch_evaluate
+   # Detailed imports
+   from src.core import scramble_text, scramble_word
+   from src.scoring import score_decoded_text, batch_evaluate
    ```
 
 2. **CLI changes**: The CLI now uses subcommands:
