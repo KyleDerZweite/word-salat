@@ -32,9 +32,14 @@ pip install -e .
 
 ### Development installation
 
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/) 0.11.16.
+The required uv version is declared in `pyproject.toml` and read by CI.
+Python 3.9 or later remains supported. Use `--python 3.12` with `uv sync`
+to select the Python version used by the CI quality checks.
+
 ```bash
-pip install -e ".[dev]"
-pre-commit install
+uv sync --locked --extra dev
+uv run --locked --extra dev pre-commit install
 ```
 
 ## Usage
@@ -172,32 +177,57 @@ word-salat/
 
 ```bash
 # Run all tests
-pytest
+uv run --locked --extra dev pytest
 
 # With coverage
-pytest --cov=src --cov-report=html
+uv run --locked --extra dev pytest --cov=src --cov-report=html
 
 # Run specific test file
-pytest tests/test_core.py -v
+uv run --locked --extra dev pytest tests/test_core.py -v
 ```
 
 ### Code quality
 
 ```bash
 # Lint and format
-ruff check src tests
-ruff format src tests
+uv run --locked --extra dev ruff check src tests
+uv run --locked --extra dev ruff format src tests
 
 # Type checking
-mypy src tests
+uv run --locked --extra dev mypy src tests
 ```
 
 ### Pre-commit hooks
 
 ```bash
-pre-commit install
-pre-commit run --all-files
+uv run --locked --extra dev pre-commit install
+uv run --locked --extra dev pre-commit run --all-files
 ```
+
+### Tooling and dependency updates
+
+`pyproject.toml` owns development requirements. Commit `uv.lock` whenever
+requirements change. CI and local hooks use `uv run --locked --extra dev`,
+so a stale lockfile fails instead of silently resolving new versions.
+Ruff, mypy and the file checks share this environment. Mypy stays on the 1.19
+series to run on Python 3.9 as well as check the Python 3.9 target. There are no runtime
+dependencies. The `dev` extra remains available to consumers, while contributor
+workflows use uv rather than a separate requirements file. Whitespace-fixing
+hooks exclude the benchmark inputs and decoded text captures so their contents
+remain unchanged.
+
+```bash
+# Refresh the development lockfile after a dependency change
+uv lock
+uv sync --locked --extra dev
+
+# Build with the locked build dependencies and validate metadata
+uv run --locked --extra dev python -m build --no-isolation
+uv run --locked --extra dev twine check dist/*
+```
+
+Dependabot checks the uv lockfile and GitHub Actions monthly. Dependency updates
+must keep Python 3.9 support and pass the existing Python 3.9 through 3.13 matrix.
 
 ## Migration from v1
 

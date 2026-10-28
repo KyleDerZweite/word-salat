@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools>=77.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,7 +7,8 @@ name = "word-salat"
 version = "2.0.0"
 description = "Generate word salad text by shuffling interior letters while keeping first and last characters intact"
 readme = "README.md"
-license = {text = "MIT"}
+license = "MIT"
+license-files = ["LICENSE.md"]
 authors = [
     {name = "KyleDerZweite"}
 ]
@@ -17,7 +18,6 @@ classifiers = [
     "Environment :: Console",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
@@ -36,9 +36,15 @@ dependencies = []
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
-    "mypy>=1.0",
+    # mypy 1.19 is the last series that runs on Python 3.9.
+    "mypy>=1.19,<1.20",
     "ruff>=0.1.0",
     "pre-commit>=3.0",
+    "pre-commit-hooks>=4.5",
+    "build>=1.0",
+    "twine>=4.0",
+    "setuptools>=77.0",
+    "wheel",
 ]
 
 [project.scripts]
@@ -51,6 +57,9 @@ Issues = "https://github.com/KyleDerZweite/word-salat/issues"
 
 [tool.setuptools]
 packages = ["src"]
+
+[tool.uv]
+required-version = "==0.11.16"
 
 # Ruff configuration
 [tool.ruff]
