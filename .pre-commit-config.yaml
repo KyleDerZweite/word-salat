@@ -1,32 +1,64 @@
-# See https://pre-commit.com for more information
-# See https://pre-commit.com/hooks.html for more hooks
+# All hooks use the same locked development environment as CI.
 repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+  - repo: local
     hooks:
       - id: trailing-whitespace
+        name: Trim trailing whitespace
+        exclude: ^(text\.txt|text_scrambled\.txt|text_decoded/)
+        entry: uv run --locked --extra dev trailing-whitespace-fixer
+        language: system
+        types: [text]
       - id: end-of-file-fixer
+        name: Fix end of files
+        exclude: ^(text\.txt|text_scrambled\.txt|text_decoded/)
+        entry: uv run --locked --extra dev end-of-file-fixer
+        language: system
+        types: [text]
       - id: check-yaml
+        name: Check YAML
+        entry: uv run --locked --extra dev check-yaml
+        language: system
+        types: [yaml]
       - id: check-added-large-files
+        name: Check added large files
+        entry: uv run --locked --extra dev check-added-large-files
+        language: system
       - id: check-merge-conflict
+        name: Check merge conflicts
+        entry: uv run --locked --extra dev check-merge-conflict
+        language: system
+        types: [text]
       - id: check-toml
+        name: Check TOML
+        entry: uv run --locked --extra dev check-toml
+        language: system
+        types: [toml]
       - id: debug-statements
+        name: Check debug statements
+        entry: uv run --locked --extra dev debug-statement-hook
+        language: system
+        types: [python]
       - id: mixed-line-ending
-        args: [--fix=lf]
-
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.9
-    hooks:
-      # Run the linter
+        name: Fix mixed line endings
+        exclude: ^(text\.txt|text_scrambled\.txt|text_decoded/)
+        entry: uv run --locked --extra dev mixed-line-ending --fix=lf
+        language: system
+        types: [text]
       - id: ruff
-        args: [--fix, --exit-non-zero-on-fix]
-      # Run the formatter
+        name: Ruff lint
+        entry: uv run --locked --extra dev ruff check --fix --exit-non-zero-on-fix src tests
+        language: system
+        pass_filenames: false
+        types_or: [python, pyi]
       - id: ruff-format
-
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.8.0
-    hooks:
+        name: Ruff format
+        entry: uv run --locked --extra dev ruff format src tests
+        language: system
+        pass_filenames: false
+        types_or: [python, pyi]
       - id: mypy
-        additional_dependencies: []
-        args: [--ignore-missing-imports]
-        files: ^src/
+        name: mypy
+        entry: uv run --locked --extra dev mypy src tests
+        language: system
+        pass_filenames: false
+        types_or: [python, pyi]
